@@ -85,9 +85,18 @@ def download_tmp_file(storage_client, bucket_name, blob_source, namef=''):
     return temp_local_path
 
 def upload_file(bucket_name, local_file, dest_buck_file):
+    """
+    Uploads a local file to a Google Cloud Storage bucket.
+
+    Args:
+        bucket_name (str): The name of the destination Google Cloud Storage bucket.
+        local_file (str): The path to the local file to upload.
+        dest_buck_file (str): The desired destination path (blob name) for the file in the bucket.
+    """
+    storage_client = storage.Client() # Initialize the Google Cloud Storage client within the function scope
     bucket = storage_client.bucket(bucket_name) ### bucket initialize
     blob = bucket.blob(dest_buck_file)          ### destiny directory in the bucket
-    blob.upload_from_filename(local_file)       ### local filename]
+    blob.upload_from_filename(local_file)       ### Upload the local file to the specified destination in the bucket
 
 """#### Set the location of your keys"""
 
