@@ -59,15 +59,29 @@ def get_files(bucket_name):
     return files
 
 def download_tmp_file(storage_client, bucket_name, blob_source, namef=''):
-    # Download files from bucket
-    bucket = storage_client.bucket(bucket_name) # Initialize bucket
-    blob = bucket.blob(blob_source)             # Initialize blob
-    if namef!="":temp_local_path=f"/tmp/{namef}"
-    else:_, temp_local_path = tempfile.mkstemp()     # Create a temporary file
-    print(temp_local_path)
-    folder = "/".join(temp_local_path.split("/")[:-1])
-    os.makedirs(folder, exist_ok=True)
-    blob.download_to_filename(temp_local_path)  # Download blob to temp file
+    """
+    Downloads a specific blob (file) from a Google Cloud Storage bucket to a temporary local file.
+
+    Args:
+        storage_client (google.cloud.storage.client.Client): Initialized Google Cloud Storage client.
+        bucket_name (str): The name of the source Google Cloud Storage bucket.
+        blob_source (str): The name of the blob (file path within the bucket) to download.
+        namef (str, optional):  An optional filename to use for the temporary local file.
+                                If not provided, a unique temporary file name will be generated. Defaults to ''.
+
+    Returns:
+        str: The path to the temporary local file where the blob was downloaded.
+    """
+    bucket = storage_client.bucket(bucket_name) # Initialize bucket object
+    blob = bucket.blob(blob_source)             # Initialize blob object for the specified source
+    if namef!="":
+        temp_local_path=f"/tmp/{namef}" # Construct a specific path in /tmp if namef is provided
+    else:
+        _, temp_local_path = tempfile.mkstemp()     # Create a unique temporary file path
+    print(temp_local_path) # Print the path of the temporary file for debugging or monitoring
+    folder = "/".join(temp_local_path.split("/")[:-1]) # Extract the directory path from the temporary file path
+    os.makedirs(folder, exist_ok=True) # Ensure the directory for the temporary file exists, creating it if necessary
+    blob.download_to_filename(temp_local_path)  # Download the blob to the temporary local file
     return temp_local_path
 
 def upload_file(bucket_name, local_file, dest_buck_file):
