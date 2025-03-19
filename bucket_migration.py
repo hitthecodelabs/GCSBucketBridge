@@ -44,8 +44,18 @@ from google.cloud import storage
 """
 
 def get_files(bucket_name):
-    blobs = storage_client.list_blobs(bucket_name)  ### Bucket initialization
-    files = [blob.name for blob in blobs]           ### Get list of blobs in bucket
+    """
+    Lists all files (blobs) in a given Google Cloud Storage bucket.
+
+    Args:
+        bucket_name (str): The name of the source Google Cloud Storage bucket.
+
+    Returns:
+        list: A list of strings, where each string is the name of a blob (file) in the bucket.
+    """
+    storage_client = storage.Client() # Initialize the Google Cloud Storage client within the function scope
+    blobs = storage_client.list_blobs(bucket_name)  ### Bucket initialization and list blobs operation
+    files = [blob.name for blob in blobs]           ### Extract blob names to create a list of file names
     return files
 
 def download_tmp_file(storage_client, bucket_name, blob_source, namef=''):
